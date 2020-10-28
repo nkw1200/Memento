@@ -1,6 +1,7 @@
 import React from 'react';
 import { Camera } from 'expo-camera';
 import { View, Text } from 'react-native';
+import { TextInput } from 'react-native';
 import * as Permissions from 'expo-permissions';
 
 import styles from './styles';
@@ -16,6 +17,7 @@ export default class CameraPage extends React.Component {
         hasCameraPermission: null,
         cameraType: Camera.Constants.Type.back,
         flashMode: Camera.Constants.FlashMode.off,
+        text: "",
     };
 
     setFlashMode = (flashMode) => this.setState({ flashMode });
@@ -29,12 +31,12 @@ export default class CameraPage extends React.Component {
 
     handleShortCapture = async () => {
         const photoData = await this.camera.takePictureAsync();
-        this.setState({ capturing: false, captures: [photoData, ...this.state.captures] })
+        this.setState({ capturing: false, captures: [{content: photoData,text:text}, ...this.state.captures] })
     };
 
     handleLongCapture = async () => {
         const videoData = await this.camera.recordAsync();
-        this.setState({ capturing: false, captures: [videoData, ...this.state.captures] });
+        this.setState({ capturing: false, captures: [{content: videoData,text:text}, ...this.state.captures] });
     };
 
     async componentDidMount() {
@@ -57,6 +59,11 @@ export default class CameraPage extends React.Component {
         return (
             <React.Fragment>
                 <View>
+                    <TextInput
+                        style={{ height: 40, borderColor: 'gray', borderWidth: 1 }}
+                        onChangeText={t => this.setState({text: t})}
+                        value={text}
+                    />
                     <Camera
                         type={cameraType}
                         flashMode={flashMode}
@@ -64,9 +71,6 @@ export default class CameraPage extends React.Component {
                         ref={camera => this.camera = camera}
                     />
                 </View>
-
-                {captures.length > 0 && <Gallery captures={captures}/>}
-
                 <Toolbar 
                     capturing={capturing}
                     flashMode={flashMode}
@@ -78,6 +82,7 @@ export default class CameraPage extends React.Component {
                     onLongCapture={this.handleLongCapture}
                     onShortCapture={this.handleShortCapture}
                 />
+                {captures.length > 0 && <Gallery captures={captures}/>}
             </React.Fragment>
         );
     };
