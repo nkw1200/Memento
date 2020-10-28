@@ -5,7 +5,7 @@ import * as Permissions from 'expo-permissions';
 
 import styles from './styles';
 import Toolbar from './toolbar.component';
-import Gallery from './gallery.component';
+import Gallery from './gallery.page';
 
 export default class CameraPage extends React.Component {
     camera = null;
@@ -66,6 +66,13 @@ export default class CameraPage extends React.Component {
                 </View>
 
                 {captures.length > 0 && <Gallery captures={captures}/>}
+
+        <Button
+            title="Go to gallery"
+            onPress={() =>
+                navigation.navigate('Gallery')
+            }
+        >Gallery</Button>
 
                 <Toolbar 
                     capturing={capturing}
